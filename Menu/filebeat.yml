@@ -1,0 +1,68 @@
+filebeat.inputs:
+  # Coleta de logs do NGINX
+  - type: filestream
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log*  # Coleta de logs de acesso do NGINX
+      - /var/log/nginx/error.log*   # Coleta de logs de erro do NGINX
+    exclude_files: ['\.gz$']
+    fields:
+      log_type: nginx_access_logs
+    fields_under_root: true
+
+  # Coleta de logs dos containers Docker
+  - type: container
+    enabled: true
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata: ~
+    exclude_files: ['\.gz$']
+    fields:
+      log_type: docker_container_logs
+    fields_under_root: true
+
+# Configuração do módulo NGINX para análise de logs de acesso e erro
+filebeat.modules:
+  - module: nginx
+    access:
+      enabled: true
+      var.paths: ["/var/log/nginx/access.log*"]  # Logs de acesso do NGINX
+    error:
+      enabled: true
+      var.paths: ["/var/log/nginx/error.log*"]  # Logs de erro do NGINX
+
+# Configuração dos módulos do Filebeat
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+output.elasticsearch:
+  # Definir o Elasticsearch como destino de saída
+  hosts: ["http://elasticsearch:9200"]
+  indices:
+    - index: "nginx-logs-%{+yyyy.MM.dd}"  # Índice para logs do NGINX
+      when.equals:
+        log_type: "nginx_access_logs"
+    - index: "docker-logs-%{+yyyy.MM.dd}"  # Índice para logs de containers Docker
+      when.equals:
+        log_type: "docker_container_logs"
+
+setup.kibana:
+  # Configura o Kibana para visualização dos logs
+  host: "http://kibana:5601"
+
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
+logging:
+  level: info
+  to_files: true
+  files:
+    path: /var/log/filebeat
+    name: filebeat.log
+    keepfiles: 7
+    permissions: 0644
