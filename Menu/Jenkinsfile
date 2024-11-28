@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clonar Git') {
             steps {
-               git branch: 'main', url: 'https://github.com/MSJantana/PUCRS.git'
+               git branch: 'main', url: 'https://github.com/MSJantana/MenuXpress.git'
             }        
         }
         stage('Construir Imagem Docker - Build') {

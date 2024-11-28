@@ -7,6 +7,8 @@ let meu_carrinho = [];
 let meu_endereco = null;
 let valor_carrinho = 0;
 let valor_entrega = 12;
+let celular_empresa = '5551981040056';
+
 
 cardapio.eventos = {
 
@@ -388,7 +390,7 @@ cardapio.metodos = {
                 complemento: $("#txtComplemento").val()?.trim(),
             };
         
-            console.log("Campos capturados:", campos);
+            //console.log("Campos capturados:", campos);
         
             // Campos obrigatórios e suas mensagens de validação
             const validacoes = [
@@ -473,7 +475,7 @@ cardapio.metodos = {
 
         // Itera pelos itens do carrinho para montar a lista de produtos
         $.each(meu_carrinho, (i, e) => {
-            itens += `${e.qntd}x ${e.name} - R$ ${e.price.toFixed(2).replace('.', ',')}\n`;
+            itens += `${e.qntd}x ${e.name} .......... R$ ${e.price.toFixed(2).replace('.', ',')}\n`;
         });
 
         // Recupera os valores calculados
@@ -493,8 +495,15 @@ cardapio.metodos = {
         // Exibe a mensagem de sucesso
             cardapio.metodos.mensagem('Seu pedido foi realizado com sucesso!', 'green');
 
+            //Convert URL
+            let encodedUrl =encodeURIComponent(texto);
+            let URL = `https://api.whatsapp.com/send?phone=${celular_empresa}&text=${encodedUrl}`;
+
+            // Redireciona para o WhatsApp
+            $("#btnEtapaResumo").attr('href', URL).attr('target', '_blank'); // Abre o link em uma nova aba
+
             // Exibe o texto completo no console (ou pode ser enviado para outro sistema)
-            console.log(texto);
+            console.log('Texto enviado para o WhatsApp:\n', texto);
 
         // Aqui você pode adicionar a lógica para redirecionar, salvar ou exibir o resumo do pedido.
     } else {
@@ -559,7 +568,7 @@ cardapio.templates = {
                     <b>\${name}</b>
                 </p>
                 <p class="price-produto">
-                    <b>\${price}</b>
+                    <b>R$ \${price}</b>
                 </p>                             
 
             </div>
@@ -586,7 +595,7 @@ cardapio.templates = {
                 <b>\${name}</b>
             </p>
             <p class="price-produto-resumo">
-                <b>\${price}</b>
+                <b>R$ \${price}</b>
             </p>
         </div>
             <p class="quantidade-produto-resumo">
