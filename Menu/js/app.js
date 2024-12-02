@@ -8,6 +8,7 @@ let meu_endereco = null;
 let valor_carrinho = 0;
 let valor_entrega = 12;
 let celular_empresa = '5551981040056';
+let valor_taxa = 250;
 
 
 cardapio.eventos = {
@@ -307,7 +308,7 @@ cardapio.metodos = {
         // Atualiz o valores na DOM
         $("#lblSubTotal").text('R$ ' + valor_carrinho.toFixed(2).replace('.', ','));
 
-        if(valor_carrinho > 250) {
+        if(valor_carrinho > valor_taxa) {
             //Entrega GRÁTIS
             $("#lblValorEntrega").text('Entrega Grátis');
             $("#lblValorTotal").text('R$ ' + valor_carrinho.toFixed(2).replace('.', ','));
@@ -446,7 +447,7 @@ cardapio.metodos = {
             .replace(/\${price}/g, e.price.toFixed(2).replace('.', ','))
             .replace(/\${qntd}/g, e.qntd);
 
-            $("#listaItensResumo").append(temp);
+            $("#listaItensResumo").append(temp);            
             
         });
 
@@ -479,7 +480,7 @@ cardapio.metodos = {
         });
 
         // Recupera os valores calculados
-        const valorEntrega = valor_carrinho > 250 ? 0 : valor_entrega; // Entrega grátis se o carrinho for maior que R$ 250
+        const valorEntrega = valor_carrinho > valor_taxa ? 0 : valor_entrega; // Entrega grátis se o carrinho for maior que R$ 250
         const valorTotalComEntrega = valor_carrinho + valorEntrega;
 
         // Monta o texto completo do pedido
@@ -493,7 +494,7 @@ cardapio.metodos = {
             texto += `\n*Valor Total:* R$ ${valorTotalComEntrega.toFixed(2).replace('.', ',')}`;
 
         // Exibe a mensagem de sucesso
-            cardapio.metodos.mensagem('Seu pedido foi realizado com sucesso!', 'green');
+            cardapio.metodos.mensagem('Seu pedido foi adicionando com sucesso!', 'green');
 
             //Convert URL
             let encodedUrl =encodeURIComponent(texto);
