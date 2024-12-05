@@ -7,7 +7,7 @@ let meu_carrinho = [];
 let meu_endereco = null;
 let valor_carrinho = 0;
 let valor_entrega = 12;
-let celular_empresa = '5551981040056';
+let celular_empresa = '+14155238886';
 let valor_taxa = 250;
 
 
@@ -16,7 +16,10 @@ cardapio.eventos = {
     init: () => {
 
         cardapio.metodos.obterItensCardapio();
-
+        cardapio.metodos.carregarBotaoLigar();
+        cardapio.metodos.carregarRedesSociais("social-buttons");
+        cardapio.metodos.carregarRedesSociais("footer-social-buttons");
+        cardapio.metodos.carregarBotaoReserva();        
     }
 
 }
@@ -389,10 +392,9 @@ cardapio.metodos = {
                 uf: $("#ddlUF").val()?.trim(),
                 numero: $("#txtNumero").val()?.trim(),
                 complemento: $("#txtComplemento").val()?.trim(),
-            };
-        
-            //console.log("Campos capturados:", campos);
-        
+            };    
+           
+
             // Campos obrigatórios e suas mensagens de validação
             const validacoes = [
                 { campo: "cep", mensagem: "Por favor, preencha o CEP corretamente.", seletor: "#txtCEP" },
@@ -512,6 +514,71 @@ cardapio.metodos = {
         cardapio.metodos.mensagem('Erro ao finalizar o pedido: Verifique o carrinho e o endereço.', 'red');
     }
     },
+
+     carregarBotaoReserva: () => {
+
+         let texto = 'Olá, gostaria de fazer uma reserva.';
+
+         //Redireciona para o WhatsApp e constroi a url;
+
+         let encodedUrl = encodeURIComponent(texto);
+         let URL = `https://api.whatsapp.com/send?phone=${celular_empresa}&text=${encodedUrl}`;
+         $("#btnReserva").attr('href', URL).attr('target', '_blank');
+     },
+
+
+     carregarBotaoLigar: () => {
+
+        $("#btnLigar").attr('href', 'tel:' + celular_empresa);
+
+     },
+
+     abrirDepoimento: (depoimento) => {
+        // Esconde todos os depoimentos
+        $(".depoimento").addClass("hidden");
+    
+        // Remove a classe 'active' de todos os botões
+        $("[id^='btnDepoimento-']").removeClass("active");
+    
+        // Mostra o depoimento selecionado e ativa o botão correspondente
+        $(`#depoimento-${depoimento}`).removeClass("hidden");
+        $(`#btnDepoimento-${depoimento}`).addClass("active");
+    },
+
+    carregarRedesSociais: (containerId) => {
+        const redesSociais = [
+            { nome: "Facebook", icone: "fab fa-facebook-f", link: "https://www.facebook.com" },
+            { nome: "Instagram", icone: "fab fa-instagram", link: "https://www.instagram.com" },
+            { nome: "Twitter", icone: "fab fa-twitter", link: "https://www.twitter.com" },
+            { nome: "YouTube", icone: "fab fa-youtube", link: "https://www.youtube.com" },
+            { nome: "Pinterest", icone: "fab fa-pinterest", link: "https://www.pinterest.com" },
+            { nome: "WhatsApp", icone: "fab fa-whatsapp", link: "https://wa.me" },
+        ];
+        
+        // Seleciona o container onde os botões serão adicionados
+        const container = document.querySelector(`#${containerId}`);
+        
+        if (!container) return; // Garante que o container exista
+        
+        // Remove os botões existentes (se houver)
+        container.innerHTML = "";
+        
+        // Adiciona novos botões de redes sociais
+        redesSociais.forEach((rede) => {
+            const botao = document.createElement("a");
+            botao.className = "btn btn-sm btn-white btn-social mt-4 mr-3";
+            botao.href = rede.link;
+            botao.target = "_blank"; // Abre em uma nova aba
+            botao.setAttribute("aria-label", `Acesse nosso ${rede.nome}`); // Acessibilidade
+        
+            const icone = document.createElement("i");
+            icone.className = rede.icone;
+        
+            botao.appendChild(icone);
+            container.appendChild(botao);
+        });
+    },    
+    
 
     //mensagens de adicionar itens
     mensagem: (texto, cor = 'red' ,  tempo = 3500) => {
