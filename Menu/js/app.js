@@ -551,7 +551,7 @@ cardapio.metodos = {
             { nome: "Instagram", icone: "fab fa-instagram", link: "https://www.instagram.com" },
             { nome: "Twitter", icone: "fab fa-twitter", link: "https://www.twitter.com" },
             { nome: "YouTube", icone: "fab fa-youtube", link: "https://www.youtube.com" },
-            { nome: "Pinterest", icone: "fab fa-pinterest", link: "https://www.pinterest.com" },
+            //{ nome: "Pinterest", icone: "fab fa-pinterest", link: "https://www.pinterest.com" },
             { nome: "WhatsApp", icone: "fab fa-whatsapp", link: "https://wa.me" },
         ];
         
