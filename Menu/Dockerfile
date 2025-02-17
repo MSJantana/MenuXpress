@@ -5,11 +5,10 @@ FROM nginx:alpine
 RUN apk update && \
     apk add --no-cache curl gnupg vim && \
     curl -L https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --dearmor -o /usr/share/keyrings/elastic-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/elastic-archive-keyring.gpg] https://artifacts.elastic.co/packages/7.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-7.x.list && \
+    echo "https://artifacts.elastic.co/packages/7.x/apk" >> /etc/apk/repositories && \
     apk update && \
     apk add --no-cache filebeat packetbeat && \
-    rm -f /etc/filebeat/filebeat.yml && \
-    rm -rf /var/lib/apt/lists/*
+    rm -f /etc/filebeat/filebeat.yml
 
 # Copia os arquivos da aplicação para o diretório padrão do NGINX
 COPY . /usr/share/nginx/html
